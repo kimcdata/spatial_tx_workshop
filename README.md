@@ -710,7 +710,11 @@ print(p3)
 dev.off()
 ```
 
+<<<<<<< HEAD
 ![](README_files/spatial_signatures.png)
+=======
+![](spatial_signatures.tiff)<!-- -->
+>>>>>>> b30e08af052852a4ba51ec973b36f262d31e2abd
 
 ### Plot the subtype scores in selected clusters
 
