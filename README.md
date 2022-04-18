@@ -1,4 +1,4 @@
-LIFE752 workshop 4 - single-cell and spatial transcriptomics analysis
+Workshop: single-cell and spatial transcriptomics analysis
 ================
 Dr Kim Clarke
 2022-04-18
@@ -312,7 +312,7 @@ sc_data = RunUMAP(sc_data, dims = 1:20)
 FeaturePlot(sc_data, features = "nFeature_RNA", reduction = "pca") + my_theme
 ```
 
-![](workshop4_with_figures_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
 Here we use the Seurat function `FeaturePlot` to show the PCA scatter
 plot. Each point is a cell that has been colour coded according to the
@@ -370,7 +370,7 @@ sc_data = FindClusters(object = sc_data, resolution = 0.15)
 DimPlot(object = sc_data, group.by = "seurat_clusters", reduction = "umap") + my_theme
 ```
 
-![](workshop4_with_figures_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
 **Question: How well do you think the clustering has worked?**
 
@@ -478,7 +478,7 @@ p = FeaturePlot(object = sc_data, features = genes_to_plot, max.cutoff = "q95", 
 Reduce(f = "+", lapply(p, function(p)p + my_theme))
 ```
 
-![](workshop4_with_figures_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
 **Question: Are all of the genes you chose good markers for their
 clusters? If not, can you use the table of markers to find a better
@@ -553,7 +553,7 @@ p2 = VlnPlot(sc_data, features = c("classical","mesenchymal"), combine = F)
 Reduce(f = "+", lapply(p1, function(p)p + my_theme)) + Reduce(f = "+", lapply(p2, function(p2)p2 + my_theme + theme(legend.position = "none"))) + plot_layout(ncol = 2)
 ```
 
-![](workshop4_with_figures_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
 **Question: Would you be able to assign a subtype to this tumour based
 on these results?**  
@@ -623,7 +623,7 @@ tissue section
 SpatialFeaturePlot(brain, features = "nFeature_Spatial") + theme(legend.position = "right")
 ```
 
-![](workshop4_with_figures_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
 
 Not bad, it looks like we were able to capture an average of about 400
 genes in each region. This is far from perfect, ideally we would measure
@@ -649,7 +649,7 @@ feats = c("CD74", "CD14", "CD86", "VEGFA", "CCNA1", "MYC")
 Reduce(f = "+", lapply(SpatialFeaturePlot(brain, features = feats, alpha = c(0.5, 1), max.cutoff = "q95", combine = F), function(p)p + theme(legend.position = "right", text = element_text(size = 8))))
 ```
 
-![](workshop4_with_figures_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
 
 We can see from these plots that we can capture a range of different
 spatial expression patterns. From genes detected in a clear pattern but
@@ -685,7 +685,7 @@ p2 = SpatialDimPlot(brain, label = TRUE, label.size = 3, alpha = 0.6)
 p2
 ```
 
-![](workshop4_with_figures_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 
 ### Score each region using the gene signatures from Verhaak et al
 
@@ -702,11 +702,15 @@ brain = PercentageFeatureSet(object = brain, features = intersect(sigs$CL, Varia
 brain = PercentageFeatureSet(object = brain, features = intersect(sigs$MES, VariableFeatures(brain)), col.name = "mesenchymal", assay = "SCT")
 brain = PercentageFeatureSet(object = brain, features = intersect(sigs$PN, VariableFeatures(brain)), col.name = "proneural", assay = "SCT")
 
-p3 = SpatialFeaturePlot(brain, features = c("classical","mesenchymal","proneural"), ncol = 2, alpha = c(0.1, 1), max.cutoff = "q90", combine = F)
-Reduce(f = "+", lapply(p3, function(p3)p3 + theme(legend.position = "right") + my_theme)) + p2
+p3 = SpatialFeaturePlot(brain, features = c("classical","mesenchymal","proneural"), ncol = 2, image.alpha = 0.1, alpha = c(0.1, 1), max.cutoff = "q90", combine = F)
+p3 = Reduce(f = "+", lapply(p3, function(p3)p3 + theme(legend.position = "right") + my_theme)) + p2
+
+tiff(filename = "spatial_signatures.tiff", width = 2800, height = 1800, res = 300)
+print(p3)
+dev.off()
 ```
 
-![](workshop4_with_figures_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
+![](spatial_signatures.tiff)
 
 ### Plot the subtype scores in selected clusters
 
@@ -739,7 +743,7 @@ df = df %>% filter(cluster %in% clusters_to_plot)
 ggplot(df, aes(x = name, y = value, color = cluster)) + geom_boxplot() + geom_jitter() + facet_wrap(facets = vars(cluster)) + theme(axis.text.x = element_text(angle = 90))
 ```
 
-![](workshop4_with_figures_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
 
 You should see that the standardised subtype scores are quite different
 in these clusters!
