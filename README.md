@@ -702,15 +702,15 @@ brain = PercentageFeatureSet(object = brain, features = intersect(sigs$CL, Varia
 brain = PercentageFeatureSet(object = brain, features = intersect(sigs$MES, VariableFeatures(brain)), col.name = "mesenchymal", assay = "SCT")
 brain = PercentageFeatureSet(object = brain, features = intersect(sigs$PN, VariableFeatures(brain)), col.name = "proneural", assay = "SCT")
 
-p3 = SpatialFeaturePlot(brain, features = c("classical","mesenchymal","proneural"), ncol = 2, image.alpha = 0.1, alpha = c(0.1, 1), max.cutoff = "q90", combine = F)
+p3 = SpatialFeaturePlot(brain, features = c("classical","mesenchymal","proneural"), ncol = 2, image.alpha = 0.1, alpha = c(0.1, 1), max.cutoff = "q95", combine = F)
 p3 = Reduce(f = "+", lapply(p3, function(p3)p3 + theme(legend.position = "right") + my_theme)) + p2
 
-tiff(filename = "spatial_signatures.tiff", width = 2800, height = 1800, res = 300)
+png(filename = "README_files/spatial_signatures.png", width = 1920, height = 1080, res = 150)
 print(p3)
 dev.off()
 ```
 
-![](spatial_signatures.tiff)
+![](README_files/spatial_signatures.png)
 
 ### Plot the subtype scores in selected clusters
 
