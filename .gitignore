@@ -1,6 +1,6 @@
-*
-*/
-!workshop4_with_figures.md
+data_for_workshop4/
+significant_marker*
+*.Rmd
 .Rproj.user
 .Rhistory
 .RData
