@@ -50,10 +50,10 @@ tissue sample and generate a transcriptome for each cell, up to hundreds
 of thousands of cells.
 
 In this workshop, we will work through a basic analysis of some
-single-cell RNA-sequencing data. We will look at how clustering and
+single-cell and spatial RNA-sequencing data. We will look at how clustering and
 dimensionality reduction techniques can be applied to reduce the
 complexity of the analysis, and how this lets us investigate different
-cell types. To do this we will use some data from cells isolated from a
+cellular states. To do this we will use some data from cells isolated from a
 brain tumour sample.
 
 The second and third part of this workshop uses R to perform the
