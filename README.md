@@ -1,10 +1,18 @@
 Workshop: single-cell and spatial transcriptomics analysis
 ================
 Dr Kim Clarke
-2022-04-25
 
   
   
+
+<br>
+<p style="background-color:LightBlue;text-align:center;">
+Please note: This was written for a computational biology course taken
+by Masters students. It may contain a few references to other course
+material/institute systems.
+</p>
+
+<br>
 
 <div id="background" class="heading" style="text-align: center;">
 
@@ -12,21 +20,22 @@ Dr Kim Clarke
 
 </div>
 
-Imagine a typical molecular biology experiment that aims to measure the
-concentration of a particular molecule in a sample. A researcher
-collects the samples they need, which could be a cell culture, a tissue
-biopsy, an entire organism (drosophila or c.elegans, for example) and
-then extracts whatever type of molecule they need to measure from that
-sample. They might then perform a western blot, qPCR or omics experiment
-to generate the data for that sample. What we have done in this case is
-collapse the concentration of a molecule in millions of cells down to a
-single representative value for the sample as a whole. But what if some
-of the cells in your sample contain a high concentration of your target
-molecule and some have almost none at all? This type of information will
-be completely lost with this “bulk” approach but is exactly the type of
-information that single-cell based technologies are designed to collect.
+Historically, a typical molecular biology experiment would aim to
+measure the concentration of a particular molecule in a sample.
+Typically, this would involve a researcher collecting the samples they
+need, which could be a cell culture, a tissue biopsy, an entire organism
+(for example: drosophila or c.elegans) and then extracting the type of
+molecule they need to measure from that sample. They might then perform
+a western blot, qPCR or omics experiment to generate data from that
+sample. What we have done in this case is collapse the concentration of
+a molecule in millions of cells down to a single representative value
+for the sample as a whole. But what if some of the cells in your sample
+contain a high concentration of your target molecule and some have
+almost none at all? This type of information will be completely lost
+with this “bulk” approach, but is exactly the type of information that
+single-cell and spatial based technologies are designed to collect.
 Single-cell technology started to emerge in around 2009 but has exploded
-in popularity in the last 5 years due to the availability of
+in popularity in the last 5 years due to the commercial availability of
 biotechnology platforms to generate single-cell based data.
 
 One field in which single cell technologies have excelled is cancer
@@ -63,16 +72,17 @@ by email for further clarification.
 
 <div id="part1" class="heading" style="text-align: center;">
 
-## Part 1 – Exploring single cell data online
+## Part 1 – A Prelude: Exploring single cell data online
 
 </div>
 
 <details>
 <summary>
-Exploring publicly available single-cell data online
+Exploring publicly available single-cell data online using CellBrowser
+(click to expand)
 </summary>
 
-We will start by looking at some data from the paper [Integrated
+<br><br>We will start by looking at some data from the paper [Integrated
 analysis of multimodal single-cell
 data](https://doi.org/10.1016/j.cell.2021.04.048).
 
@@ -219,7 +229,7 @@ library(dplyr)
 library(patchwork)
 library(tidyr)
 
-my_theme = theme(text = element_text(size = 10), 
+my_theme = theme(text = element_text(size = 12), 
                  axis.text = element_blank(),
                  axis.ticks = element_blank())
 ```
@@ -315,10 +325,17 @@ sc_data = RunUMAP(sc_data, dims = 1:20)
 -   Plot the results of your PCA analysis
 
 ``` r
-FeaturePlot(sc_data, features = "nFeature_RNA", reduction = "pca") + my_theme
+FeaturePlot(sc_data, features = "nFeature_RNA", reduction = "pca", pt.size = 2) + 
+  my_theme + 
+  ggtitle("nFeature_RNA (genes detected per cell)")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](README_files/PCA.png)
+<p>
+<i>Figure 1 - The single cell transcriptomics data in principle
+component space. Each point is a cell that has been colour coded
+according to the number of genes detected in that cell.</i>
+</p>
 
 Here we use the Seurat function `FeaturePlot` to show the PCA scatter
 plot. Each point is a cell that has been colour coded according to the
@@ -348,6 +365,13 @@ The method underlying UMAP tends to introduce space between groups of
 dissimilar cells, which is one of the reasons why it is such a popular
 visualisation tool.
 
+![](README_files/UMAP.png)
+<p>
+<i>Figure 2 - The single cell transcriptomics data in UMAP space. Each
+point is a cell that has been colour coded according to the number of
+genes detected in that cell.</i>
+</p>
+
 ### Find clusters of similar cells
 
 It can be useful to systematically identify similar groups of cells in
@@ -373,10 +397,15 @@ sc_data = FindClusters(object = sc_data, resolution = 0.15)
     according to the clusters
 
 ``` r
-DimPlot(object = sc_data, group.by = "seurat_clusters", reduction = "umap") + my_theme
+DimPlot(object = sc_data, group.by = "seurat_clusters", reduction = "umap", pt.size = 2) + my_theme +
+  ggtitle("Clusters of cells")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+![](README_files/UMAP_clusters.png)
+<p>
+<i>Figure 3 - UMAP projection where cells are colour coded by cluster
+</i>
+</p>
 
 **Question: How well do you think the clustering has worked?**
 
@@ -480,11 +509,15 @@ genes in the cells in case we spot anything unusual.
 
 ``` r
 # genes_to_plot = c("", "", "", "")
-p = FeaturePlot(object = sc_data, features = genes_to_plot, max.cutoff = "q95", combine = F, pt.size = 0.3)
-Reduce(f = "+", lapply(p, function(p)p + my_theme))
+p = FeaturePlot(object = sc_data, features = genes_to_plot, max.cutoff = "q95", combine = F, pt.size = 0.5)
+Reduce(f = "+", lapply(p, function(p)p + my_theme + scale_color_distiller(type = "seq", direction = -1, palette = "Spectral")))
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+![](README_files/UMAP_markers.png)
+<p>
+<i>Figure 4 - Expression of potential representative markers of each
+cluster. Expression value: log1p(counts) </i>
+</p>
 
 **Question: Are all of the genes you chose good markers for their
 clusters? If not, can you use the table of markers to find a better
@@ -554,15 +587,23 @@ sc_data = PercentageFeatureSet(object = sc_data, features = intersect(sigs$CL, V
 sc_data = PercentageFeatureSet(object = sc_data, features = intersect(sigs$MES, VariableFeatures(sc_data)), col.name = "mesenchymal", assay = "SCT")
 sc_data = PercentageFeatureSet(object = sc_data, features = intersect(sigs$PN, VariableFeatures(sc_data)), col.name = "proneural", assay = "SCT")
 
-p1 = FeaturePlot(sc_data, features = c("classical","mesenchymal","proneural"), max.cutoff = "q95", combine = F, pt.size = 0.3)
-p2 = VlnPlot(sc_data, features = c("classical","mesenchymal"), combine = F)
+p1 = FeaturePlot(sc_data, features = c("classical","mesenchymal","proneural"), max.cutoff = "q95", combine = F, pt.size = 1)
+p2 = VlnPlot(sc_data, features = c("classical","mesenchymal","proneural"), combine = F)
 Reduce(f = "+", lapply(p1, function(p)p + my_theme)) + Reduce(f = "+", lapply(p2, function(p2)p2 + my_theme + theme(legend.position = "none"))) + plot_layout(ncol = 2)
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
-
 **Question: Would you be able to assign a subtype to this tumour based
-on these results?**  
+on these results?**
+
+![](README_files/UMAP_signatures.png)
+<p>
+<i>Figure 5 - Scoring each cell using the Glioblastoma subtype
+signatures. Cells are colour coded according to the score for each
+signature. Scales are equal to the percentage of total counts in each
+cell attributed to that signature.</i>
+</p>
+
+  
   
   
   
@@ -592,12 +633,16 @@ look at the image of the tissue section.
     “data_for_workshop4” directory containing some images. Open the file
     “tissue_hires_image”.
 
+Low-res version for display on github:<br>
+<img src="data_for_workshop4/spatial/tissue_lowres_image.png" width="50%" height="50%">
+<br>
+
 This is a digital photograph of a section from part of tumour biopsy. We
 can see that there is a part that might be damaged (top left), but there
 is plenty of intact tissue. In a real research project we might also
-have some staining data using antibodies against known cell types,
-nuclei, immune cells, etc, but for this example we will just look at the
-gene expression data.
+have some staining data (IHC) using antibodies against known cell types,
+nuclei, immune cells, proteins of interest, etc, but for this example we
+will just look at the gene expression data.
 
 In the interest of time we will combine some of the steps needed to get
 the data ready into larger blocks of code.
@@ -606,7 +651,8 @@ the data ready into larger blocks of code.
 
 -   Run the code below to perform all the steps necessary before further
     analysis. Conceptually, these steps are virtually identical to the
-    previous section.
+    previous section, but instead of cells we have regions on the tissue
+    section.
 
 ``` r
 brain = Load10X_Spatial(data.dir = "data_for_workshop4", filename = "Targeted_Visium_Human_Glioblastoma_Pan_Cancer_filtered_feature_bc_matrix.h5",filter.matrix = F)
@@ -629,7 +675,12 @@ tissue section
 SpatialFeaturePlot(brain, features = "nFeature_Spatial") + theme(legend.position = "right")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+![](README_files/spatial_nFeatures.png)
+<p>
+<i>Figure 6 - Regions where gene expression was detectable, mapped to
+the image of the tissue section. Colour coding indicates the number of
+genes detected in each region.</i>
+</p>
 
 Not bad, it looks like we were able to capture an average of about 400
 genes in each region. This is far from perfect, ideally we would measure
@@ -652,10 +703,21 @@ varying genes if you want to have a look at others.
 ``` r
 feats = c("CD74", "CD14", "CD86", "VEGFA", "CCNA1", "MYC")
 
-Reduce(f = "+", lapply(SpatialFeaturePlot(brain, features = feats, alpha = c(0.5, 1), max.cutoff = "q95", combine = F), function(p)p + theme(legend.position = "right", text = element_text(size = 8))))
+Reduce(f = "+", lapply(SpatialFeaturePlot(brain, stroke = 0, pt.size.factor = 2, image.alpha = 0.5, 
+                                          features = feats, 
+                                          alpha = c(0.2, 1), 
+                                          max.cutoff = "q95", 
+                                          combine = F), function(p)
+                                            p + scale_fill_distiller(palette = "Spectral", ) +
+                         theme(legend.position = "right", text = element_text(size = 10))))
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+![](README_files/spatial_markers.png)
+<p>
+<i>Figure 7 - A selection of genes with the highest variation across the
+whole dataset. Points are colour coded according to expression of each
+gene (log1p counts).</i>
+</p>
 
 We can see from these plots that we can capture a range of different
 spatial expression patterns. From genes detected in a clear pattern but
@@ -686,12 +748,14 @@ regions based on the gene expression data.
 -   Plot the clusters using the `SpatialDimPlot`command below.
 
 ``` r
-p2 = SpatialDimPlot(brain, label = TRUE, label.size = 3, alpha = 0.6)
-
+p2 = SpatialDimPlot(brain, label = TRUE, label.size = 3, alpha = 0.6, image.alpha = 0.5, pt.size.factor = 2, label.color = "black")
 p2
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+![](README_files/spatial_clusters.png)
+<p>
+<i>Figure 8 - Identification of clusters of regions.</i>
+</p>
 
 ### Score each region using the gene signatures from Verhaak et al
 
@@ -708,16 +772,16 @@ brain = PercentageFeatureSet(object = brain, features = intersect(sigs$CL, Varia
 brain = PercentageFeatureSet(object = brain, features = intersect(sigs$MES, VariableFeatures(brain)), col.name = "mesenchymal", assay = "SCT")
 brain = PercentageFeatureSet(object = brain, features = intersect(sigs$PN, VariableFeatures(brain)), col.name = "proneural", assay = "SCT")
 
-p3 = SpatialFeaturePlot(brain, features = c("classical","mesenchymal","proneural"), ncol = 2, image.alpha = 0.1, alpha = c(0.1, 1), max.cutoff = "q95", combine = F)
+p3 = SpatialFeaturePlot(brain, features = c("classical","mesenchymal","proneural"), ncol = 2, image.alpha = 0.1, alpha = c(0.3, 1), max.cutoff = "q95", combine = F, pt.size.factor = 2, stroke = 0)
 p3 = Reduce(f = "+", lapply(p3, function(p3)p3 + theme(legend.position = "right") + my_theme)) + p2
-
-# For Github I will write this as a higher resolution PNG because the default version was very low quality
-png(filename = "README_files/spatial_signatures.png", width = 1920, height = 1080, res = 150)
-print(p3)
-dev.off()
 ```
 
 ![](README_files/spatial_signatures.png)
+<p>
+<i>Figure 9 - Scoring each region using the Glioblastoma subtype
+signatures. Scales represent the percentage of expression in each region
+attributable to that signature.</i>
+</p>
 
 ### Plot the subtype scores in selected clusters
 
@@ -739,7 +803,11 @@ that subtype. Keep in mind that this is just for visualisation purposes.
 # clusters_to_plot = c()
 
 # standardise scores
-df = data.frame(region = colnames(brain), classical = brain$classical, mesenchymal = brain$mesenchymal, proneural = brain$proneural, cluster = brain$seurat_clusters)
+df = data.frame(region = colnames(brain), 
+                classical = brain$classical, 
+                mesenchymal = brain$mesenchymal, 
+                proneural = brain$proneural, 
+                cluster = brain$seurat_clusters)
 df = df %>% mutate(classical_norm = classical/sum(classical), 
               mesenchymal_norm = mesenchymal/sum(mesenchymal), 
               proneural_norm = proneural/sum(proneural))
@@ -747,10 +815,22 @@ df = df %>% mutate(classical_norm = classical/sum(classical),
 df = pivot_longer(data = df, cols = c(classical_norm, mesenchymal_norm))
 df = df %>% filter(cluster %in% clusters_to_plot)
 
-ggplot(df, aes(x = name, y = value, color = cluster)) + geom_boxplot() + geom_jitter() + facet_wrap(facets = vars(cluster)) + theme(axis.text.x = element_text(angle = 90))
+ggplot(df, aes(x = name, y = value, color = cluster)) + 
+  geom_boxplot() + 
+  geom_jitter() + 
+  facet_wrap(facets = vars(cluster), nrow = 1) + 
+  theme_bw()  + 
+  theme(axis.text.x = element_text(angle = 90),
+        text = element_text(size = 14)) + 
+  xlab("Cluster") + 
+  ylab("Standardised signature score")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+![](README_files/spatial_signatures_boxplot.png)
+<p>
+<i>Figure 10 - Normalised signature scores for two clusters. Classical
+and mesenchymal scores are shown for indicative purposes.</i>
+</p>
 
 You should see that the standardised subtype scores are quite different
 in these clusters!
@@ -776,11 +856,4 @@ we looked at in part 1](https://doi.org/10.1016/j.cell.2021.04.048)
 simultaneously measured the transcriptome and expression of 228 cell
 surface proteins in 211,000 single-cells, giving us a glimpse at the
 type of datasets that will be routinely available in the future. Being
-able to analyse this type of data will be a valuable skill.  
-  
-  
-  
-
-## Appendix A
-
-![](data_for_workshop4/appendix_A.png)
+able to analyse this type of data will be a valuable skill.
