@@ -828,7 +828,7 @@ ggplot(df, aes(x = name, y = value, color = cluster)) +
 
 ![](README_files/spatial_signatures_boxplot.png)
 <p>
-<i>Figure 10 - Normalised signature scores for two clusters. Classical
+<i>Figure 10 - Normalised signature scores for three clusters. Classical
 and mesenchymal scores are shown for indicative purposes.</i>
 </p>
 
