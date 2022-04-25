@@ -67,7 +67,10 @@ by email for further clarification.
 
 </div>
 
-We will start by looking at some data from the paper [Integrated
+<details>
+  <summary> Exploring single-cell datasets available in the public domain using CellBrowser </summary>
+
+<br><br>We will start by looking at some data from the paper [Integrated
 analysis of multimodal single-cell
 data](https://doi.org/10.1016/j.cell.2021.04.048).
 
@@ -173,7 +176,7 @@ combinations of markers?**
 **NKG7 without CD3D**  
   
   
-  
+ </details> 
 
 <div id="part2" class="heading" style="text-align: center;">
 
@@ -313,6 +316,8 @@ FeaturePlot(sc_data, features = "nFeature_RNA", reduction = "pca") + my_theme
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](README_files/PCA.png)
+Figure 1 - Principle Component Analysis
 
 Here we use the Seurat function `FeaturePlot` to show the PCA scatter
 plot. Each point is a cell that has been colour coded according to the
@@ -341,6 +346,9 @@ separated into groups a bit more obviously than they were with the PCA.
 The method underlying UMAP tends to introduce space between groups of
 dissimilar cells, which is one of the reasons why it is such a popular
 visualisation tool.
+
+![](README_files/UMAP.png)
+Figure 2 - UMAP
 
 ### Find clusters of similar cells
 
@@ -371,6 +379,8 @@ DimPlot(object = sc_data, group.by = "seurat_clusters", reduction = "umap") + my
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+![](README_files/clustering.png)
+Figure 3 - UMAP plot colour coded by cluster
 
 **Question: How well do you think the clustering has worked?**
 
@@ -479,6 +489,8 @@ Reduce(f = "+", lapply(p, function(p)p + my_theme))
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+![](README_files/UMAP_marker_expression.png)
+Figure 4 - Differentiall expressed genes
 
 **Question: Are all of the genes you chose good markers for their
 clusters? If not, can you use the table of markers to find a better
@@ -554,6 +566,8 @@ Reduce(f = "+", lapply(p1, function(p)p + my_theme)) + Reduce(f = "+", lapply(p2
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+![](README_files/UMAP_subtype_scoring.png)
+Figure 5 - UMAP with subtype scoring
 
 **Question: Would you be able to assign a subtype to this tumour based
 on these results?**  
